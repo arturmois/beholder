@@ -21,11 +21,13 @@ function Login() {
         event.preventDefault();
 
         doLogin(email, password)
-            .then(isValid => {
-                if (isValid)
+            .then(response => {
+                if (response)
                     history.push('/settings');
-            }).catch(err => {
-                setError(err);
+            })
+            .catch(err => {
+                console.error(err)
+                setError(`Invalid user and/or password!`);
             });
     }
 
