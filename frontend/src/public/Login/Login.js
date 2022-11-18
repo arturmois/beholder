@@ -22,13 +22,15 @@ function Login() {
 
         doLogin(email, password)
             .then(response => {
-                if (response)
+                if (response) {
+                    localStorage.setItem('token', response.token);
                     history.push('/settings');
+                }
             })
             .catch(err => {
                 console.error(err)
                 setError(`Invalid user and/or password!`);
-            });
+            })
     }
 
     return (
