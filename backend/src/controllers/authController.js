@@ -1,19 +1,23 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const settingsRepository = require('../repositories/settingsRepository');
 
-function doLogin(req, res, next) {
+async function doLogin(req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
 
-    if (email === 'arturmoiscontato@gmail.com'
-        && bcrypt.compareSync(password, '$2a$12$gz7zyC7THdCg7dUNzdmuOOIF8fSFvYn2Yc8yd3o4NaJ.0v08zmz4y')) {
-        const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET, {
-            expiresIn: parseInt(process.env.JWT_EXPIRES)
-        })
-        res.json({ token });
+    const settings = await settingsRepository.getSettingsByEmail(email);
+    if (settings) {
+        const isValid = bcrypt.compareSync(password, settings.password);
+        if (isValid) {
+            const token = jwt.sign({ id: settings.id }, process.env.JWT_SECRET, {
+                expiresIn: parseInt(process.env.JWT_EXPIRES)
+            })
+            return res.json({ token });
+        }
     }
-    else
-        res.sendStatus(401);
+
+    res.sendStatus(401);
 }
 
 const blacklist = [];
