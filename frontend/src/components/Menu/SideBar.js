@@ -7,10 +7,6 @@ function SideBar() {
 
     const history = useHistory();
 
-    function getClassName(itemName) {
-        return window.location.pathname === itemName ? 'nav-item active' : 'nav-item';
-    }
-
     function cleanAndRedirect() {
         localStorage.removeItem('token');
         history.push('/');
